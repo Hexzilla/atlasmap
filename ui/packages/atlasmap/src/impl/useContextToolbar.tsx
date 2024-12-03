@@ -24,6 +24,7 @@ import {
   ToggleNamespaceTableViewToolbarItem,
   ToggleTypesToolbarItem,
   ToggleUnmappedFieldsToolbarItem,
+  ExportAdmFileToolbarItem,
 } from './toolbarItems';
 import React, { useMemo, useState } from 'react';
 
@@ -61,11 +62,12 @@ export interface IUseContextToolbarData {
   showToggleMappedFieldsToolbarItem?: boolean;
   showToggleUnmappedFieldsToolbarItem?: boolean;
   showAddNewMappingToolbarItem?: boolean;
+  showExportAdmFileToolbarItem?: boolean;
 }
 
 export function useContextToolbar({
-  showImportAtlasFileToolbarItem = true,
-  showImportJarFileToolbarItem = true,
+  showImportAtlasFileToolbarItem = false,
+  showImportJarFileToolbarItem = false,
   showExportAtlasFileToolbarItem = true,
   showResetToolbarItem = true,
 
@@ -78,6 +80,7 @@ export function useContextToolbar({
   showToggleMappedFieldsToolbarItem = true,
   showToggleUnmappedFieldsToolbarItem = true,
   showAddNewMappingToolbarItem = true,
+  showExportAdmFileToolbarItem = true,
 
   onImportADMArchiveFile,
   onImportJarFile,
@@ -185,6 +188,11 @@ export function useContextToolbar({
             (activeView === 'ColumnMapper' ||
               activeView === 'MappingTable') && (
               <AddMappingToolbarItem onClick={newMapping} />
+            )}
+          {showExportAdmFileToolbarItem && 
+            (activeView === 'ColumnMapper' ||
+              activeView === 'MappingTable') && (
+              <ExportAdmFileToolbarItem onClick={onExportAtlasFile} />
             )}
           {showAddNewMappingToolbarItem &&
             (activeView === 'ColumnMapper' ||

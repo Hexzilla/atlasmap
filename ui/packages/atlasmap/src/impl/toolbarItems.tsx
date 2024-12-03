@@ -108,6 +108,7 @@ export const AtlasmapToolbarItem: FunctionComponent<
     ),
   ].filter((f) => f);
   return (
+    <div style={{ display: 'none' }}>
     <ToolbarItem>
       <Dropdown
         toggle={
@@ -117,7 +118,7 @@ export const AtlasmapToolbarItem: FunctionComponent<
             toggleIndicator={CaretDownIcon}
             data-testid="atlasmap-menu-button"
           >
-            AtlasMap
+            Mapping
           </DropdownToggle>
         }
         isOpen={isOpen}
@@ -125,6 +126,7 @@ export const AtlasmapToolbarItem: FunctionComponent<
         isPlain={true}
       />
     </ToolbarItem>
+    </div>
   );
 };
 
@@ -152,7 +154,7 @@ export const ImportAtlasFileToolbarItem: FunctionComponent<{
       onClick={onClick}
       data-testid="import-mappings-button"
     >
-      Import a catalog (.adm)
+      Hey Ok (.adm)
       <HiddenFileInput accept=".adm" multiple={false} />
     </DropdownItem>
   );
@@ -474,6 +476,27 @@ export const AboutToolbarItem: FunctionComponent<{
         data-testid="about-button"
       >
         <HelpIcon />
+      </Button>
+    </Tooltip>
+  </ToolbarItem>
+);
+
+export const ExportAdmFileToolbarItem: FunctionComponent<{
+  onClick: () => void;
+}> = ({ onClick }) => (
+  <ToolbarItem>
+    <Tooltip
+      position={'auto'}
+      enableFlip={true}
+      content={<div>Export ADM file</div>}
+    >
+      <Button
+        variant={'plain'}
+        aria-label="Export ADM file"
+        onClick={onClick}
+        data-testid="export-mappings-button"
+      >
+        <ExportIcon />
       </Button>
     </Tooltip>
   </ToolbarItem>

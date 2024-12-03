@@ -31,7 +31,7 @@ import {
   SourceTargetView,
 } from '../Views';
 import { IUseContextToolbarData, useContextToolbar } from './useContextToolbar';
-import React, { FunctionComponent, useCallback, useMemo } from 'react';
+import React, { FunctionComponent, useCallback, useMemo, useEffect } from 'react';
 import { getConstantType, getPropertyType } from './utils';
 
 import { AlertGroup } from '@patternfly/react-core';
@@ -99,6 +99,8 @@ export const Atlasmap: FunctionComponent<IAtlasmapProps> = ({
     isEnumerationMapping,
   } = useAtlasmap();
 
+  const admFilePath = "http://172.16.153.1/dashboard/atlasmap-mapping-mine.adm";
+
   const { handlers, dialogs } = useAtlasmapDialogs({
     modalContainer: document.getElementById(modalsContainerId)!,
   });
@@ -115,6 +117,27 @@ export const Atlasmap: FunctionComponent<IAtlasmapProps> = ({
       onResetAtlasmap: handlers.onResetAtlasmap,
       onAbout: handlers.onAbout,
     });
+
+  useEffect(() => {
+    if (admFilePath) {
+      fetch(admFilePath)
+        .then(response => {
+          // console.log(response);
+          if (!response.ok) { 
+            throw new Error('Network response was not ok');
+          }
+          return response.arrayBuffer();
+        })
+        .then(buffer => {
+          const file = new File([buffer], "admFile.adm");
+          handlers.onImportADMArchive(file);
+          // importADMArchiveFile(file);
+        })
+        .catch(error => {
+          console.error("Error loading ADM file:", error);
+        });
+    }
+  }, [admFilePath]);
 
   const shouldShowMappingPreviewForField = useCallback(
     (field: IAtlasmapField) =>

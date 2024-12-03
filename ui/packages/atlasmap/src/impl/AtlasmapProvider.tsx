@@ -480,6 +480,7 @@ export function useAtlasmap() {
 
   const handleImportADMArchiveFile = useCallback(
     (file: File) => {
+      console.log("handleImportADMArchiveFile : ", file);
       importADMArchiveFile(file, configModel);
     },
     [configModel],
@@ -648,6 +649,7 @@ export function useAtlasmap() {
     changeDocumentName,
     getEnumerationValues,
     isEnumerationMapping,
+    handleImportADMArchiveFile,
     configModel,
   };
 }

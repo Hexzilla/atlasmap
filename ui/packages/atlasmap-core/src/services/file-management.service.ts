@@ -462,22 +462,51 @@ export class FileManagementService {
           const fileContent = new Blob([value], {
             type: 'application/octet-stream',
           });
-          CommonUtil.writeFile(fileContent, mappingsFileName)
-            .then((value2) => {
-              resolve(value2);
-            })
-            .catch((error) => {
-              this.cfg.errorService.addError(
-                new ErrorInfo({
-                  message: 'Unable to save the current data mappings.',
-                  level: ErrorLevel.ERROR,
-                  scope: ErrorScope.APPLICATION,
-                  type: ErrorType.INTERNAL,
-                  object: error,
-                })
-              );
-              resolve(false);
-            });
+          // CommonUtil.writeFile(fileContent, mappingsFileName)
+          //   .then((value2) => {
+          //     resolve(value2);
+          //   })
+          //   .catch((error) => {
+          //     this.cfg.errorService.addError(
+          //       new ErrorInfo({
+          //         message: 'Unable to save the current data mappings.',
+          //         level: ErrorLevel.ERROR,
+          //         scope: ErrorScope.APPLICATION,
+          //         type: ErrorType.INTERNAL,
+          //         object: error,
+          //       })
+          //     );
+          //     resolve(false);
+          //   });
+          const url = 'http://172.16.153.1/dashboard/upload.php';
+          fetch(url, {
+            method: 'PUT',
+            body: fileContent,
+            headers: {
+              'Content-Type': 'application/octet-stream',
+            },
+          })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            return response.text();
+          })
+          .then(_ => {
+            console.log('File successfully saved to URL:', url);
+          })
+          .catch(error => {
+            this.cfg.errorService.addError(
+              new ErrorInfo({
+                message: `Unable to save the file to the URL '${url}'.`,
+                level: ErrorLevel.ERROR,
+                scope: ErrorScope.APPLICATION,
+                type: ErrorType.INTERNAL,
+                object: error,
+              })
+            );
+            resolve(false);
+          });
         });
       });
     });

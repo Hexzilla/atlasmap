@@ -56,6 +56,7 @@ $ ./mvnw clean install -DskipTests
 ```
 $ cd ${ATLASMAP}/standalone
 $ ../mvnw -Pitests spring-boot:run
+$ ../mvnw -DskipTests spring-boot:run
 ```
 
 4. In a separate terminal window, run the standalone UI:
