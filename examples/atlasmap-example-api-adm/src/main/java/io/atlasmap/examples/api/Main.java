@@ -27,6 +27,9 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+
 import io.atlasmap.api.AtlasContext;
 import io.atlasmap.api.AtlasContextFactory;
 import io.atlasmap.api.AtlasSession;
@@ -51,9 +54,26 @@ public class Main {
 
         session.setSourceDocument("JSONSchemaSource", source);
         context.process(session);
-        String targetDoc = (String) session.getTargetDocument("XMLInstanceSource");
+        String targetDocXML = (String) session.getTargetDocument("XMLInstanceSource");
+        String targetDocJSON = (String) session.getDefaultTargetDocument();
 
-        printXML(targetDoc);
+        // System.out.println(session.getDefaultTargetDocument());
+        // System.out.println(targetDocXML);
+        // System.out.println(targetDocJSON);
+
+        if (targetDocXML != null) {
+            printXML(targetDocXML);
+        } else {
+            System.out.println("Target JSON Document is null.");
+        }
+        
+        // Check if targetDocJSON is null before attempting to print
+        if (targetDocJSON != null) {
+            System.out.println(targetDocJSON);
+            printJSON(targetDocJSON);
+        } else {
+            System.out.println("Target JSON Document is null.");
+        }
     }
 
     private void printXML(String targetDoc) throws Exception {
@@ -62,6 +82,14 @@ public class Main {
         transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
         StringWriter writer = new StringWriter();
         transformer.transform(new StreamSource(new StringReader((String)targetDoc)), new StreamResult(writer));
-        System.out.println("Target Document:\n" + writer.toString());
+        System.out.println("Target XML Document:\n" + writer.toString());
+    }
+
+    private void printJSON(String targetDoc) throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        Object json = mapper.readValue(targetDoc, Object.class);
+        ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter();
+        String prettyJson = writer.writeValueAsString(json);
+        System.out.println("Target JSON Document:\n" + prettyJson);
     }
 }
