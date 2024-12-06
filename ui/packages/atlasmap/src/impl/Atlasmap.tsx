@@ -47,6 +47,8 @@ export interface IAtlasmapProps {
   allowCustomJavaClasses?: boolean;
   modalsContainerId?: string;
   toolbarOptions?: IUseContextToolbarData;
+  admFilePath?: string;
+  exportADMArchiveFileOnMain?: (data: Blob) => void;
 }
 
 export const Atlasmap: FunctionComponent<IAtlasmapProps> = ({
@@ -56,7 +58,9 @@ export const Atlasmap: FunctionComponent<IAtlasmapProps> = ({
   allowDelete = true,
   allowCustomJavaClasses = true,
   modalsContainerId = 'modals',
+  admFilePath = "",
   toolbarOptions,
+  exportADMArchiveFileOnMain,
 }) => {
   const {
     pending,
@@ -97,14 +101,26 @@ export const Atlasmap: FunctionComponent<IAtlasmapProps> = ({
     onRemoveFromMapping,
     onCreateMapping,
     isEnumerationMapping,
+    exportADMArchiveFile,
   } = useAtlasmap();
-
-  const admFilePath = "http://172.16.153.1/dashboard/atlasmap-mapping-mine.adm";
 
   const { handlers, dialogs } = useAtlasmapDialogs({
     modalContainer: document.getElementById(modalsContainerId)!,
   });
   const { activeView, showMappingPreview, showTypes, contextToolbar } =
+    // useContextToolbar({
+    //   showImportAtlasFileToolbarItem: allowImport,
+    //   showImportJarFileToolbarItem: allowImport,
+    //   showExportAtlasFileToolbarItem: allowExport,
+    //   showResetToolbarItem: allowReset,
+    //   ...toolbarOptions,
+    //   onImportADMArchiveFile: handlers.onImportADMArchive,
+    //   onImportJarFile: (file) => importJarFile(file),
+    //   onExportAtlasFile: handlers.onExportADMArchive,
+    //   onResetAtlasmap: handlers.onResetAtlasmap,
+    //   onAbout: handlers.onAbout,
+    // });
+
     useContextToolbar({
       showImportAtlasFileToolbarItem: allowImport,
       showImportJarFileToolbarItem: allowImport,
@@ -113,7 +129,7 @@ export const Atlasmap: FunctionComponent<IAtlasmapProps> = ({
       ...toolbarOptions,
       onImportADMArchiveFile: handlers.onImportADMArchive,
       onImportJarFile: (file) => importJarFile(file),
-      onExportAtlasFile: handlers.onExportADMArchive,
+      onExportAtlasFile: () => exportADMArchiveFile("result", exportADMArchiveFileOnMain),
       onResetAtlasmap: handlers.onResetAtlasmap,
       onAbout: handlers.onAbout,
     });

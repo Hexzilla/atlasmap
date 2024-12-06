@@ -54,9 +54,9 @@ export async function deleteAtlasFile(fileId: string, isSource: boolean) {
  *
  * @param fileName - user-specified ADM archive file name
  */
-export function exportADMArchiveFile(fileName: string) {
+export function exportADMArchiveFile(fileName: string, fn?: (data: Blob) => void) {
   const cfg = ConfigModel.getConfig();
-  return cfg.fileService.exportADMArchive(fileName);
+  return cfg.fileService.exportADMArchive(fileName, fn as ((data: Blob) => {}));
 }
 
 /**

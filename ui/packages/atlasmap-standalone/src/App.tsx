@@ -20,6 +20,32 @@ import React from 'react';
 import atlasmapLogo from './logo-horizontal-darkbg.png';
 
 const App: React.FC = () => {
+
+  const exportADMArchiveFile = (fileContent: Blob) => {
+    console.log("Export Clicked!");
+
+    const url = 'http://172.16.153.1/dashboard/upload.php';
+    fetch(url, {
+      method: 'PUT',
+      body: fileContent,
+      headers: {
+        'Content-Type': 'application/octet-stream',
+      },
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.text();
+    })
+    .then(_ => {
+      console.log('File successfully saved to URL:', url);
+    })
+    .catch(error => {
+      console.log(error);
+    });
+  }
+
   return (
     <Page
       header={
@@ -42,7 +68,10 @@ const App: React.FC = () => {
         padding={{ default: 'noPadding' }}
         isFilled={true}
       >
-        <Atlasmap />
+        <Atlasmap 
+          admFilePath={"http://172.16.153.1/dashboard/atlasmap-mapping-mine.adm"}
+          exportADMArchiveFileOnMain={exportADMArchiveFile}
+        />
       </PageSection>
     </Page>
   );

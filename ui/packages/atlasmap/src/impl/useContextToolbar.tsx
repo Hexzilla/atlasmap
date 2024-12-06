@@ -42,7 +42,7 @@ export type Views =
 export interface IUseContextToolbarHandlers {
   onImportADMArchiveFile: (file: File) => void;
   onImportJarFile: (file: File) => void;
-  onExportAtlasFile: () => void;
+  onExportAtlasFile: (filename: String, fn?: (data: Blob) => void) => void;
   onResetAtlasmap: () => void;
   onAbout: () => void;
 }
@@ -192,7 +192,7 @@ export function useContextToolbar({
           {showExportAdmFileToolbarItem && 
             (activeView === 'ColumnMapper' ||
               activeView === 'MappingTable') && (
-              <ExportAdmFileToolbarItem onClick={onExportAtlasFile} />
+                <ExportAdmFileToolbarItem onClick={() => onExportAtlasFile('defaultFilename.adm')} />
             )}
           {showAddNewMappingToolbarItem &&
             (activeView === 'ColumnMapper' ||

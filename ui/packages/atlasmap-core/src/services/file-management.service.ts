@@ -444,7 +444,7 @@ export class FileManagementService {
    *
    * @param event
    */
-  exportADMArchive(mappingsFileName: string): Promise<boolean> {
+  exportADMArchive(mappingsFileName: string, fn?: (data: Blob) => {}): Promise<boolean> {
     return new Promise<boolean>((resolve) => {
       this.updateDigestFile().then(() => {
         // Fetch the full ADM archive file from the runtime (ZIP) and export it to to the local
@@ -478,35 +478,10 @@ export class FileManagementService {
           //     );
           //     resolve(false);
           //   });
-          const url = 'http://172.16.153.1/dashboard/upload.php';
-          fetch(url, {
-            method: 'PUT',
-            body: fileContent,
-            headers: {
-              'Content-Type': 'application/octet-stream',
-            },
-          })
-          .then(response => {
-            if (!response.ok) {
-              throw new Error('Network response was not ok');
-            }
-            return response.text();
-          })
-          .then(_ => {
-            console.log('File successfully saved to URL:', url);
-          })
-          .catch(error => {
-            this.cfg.errorService.addError(
-              new ErrorInfo({
-                message: `Unable to save the file to the URL '${url}'.`,
-                level: ErrorLevel.ERROR,
-                scope: ErrorScope.APPLICATION,
-                type: ErrorType.INTERNAL,
-                object: error,
-              })
-            );
-            resolve(false);
-          });
+          
+          if (fn) {
+            fn(fileContent);
+          }
         });
       });
     });
