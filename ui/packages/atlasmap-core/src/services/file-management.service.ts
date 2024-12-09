@@ -444,7 +444,7 @@ export class FileManagementService {
    *
    * @param event
    */
-  exportADMArchive(mappingsFileName: string, fn?: (data: Blob) => {}): Promise<boolean> {
+  exportADMArchive(mappingsFileName: string): Promise<boolean> {
     return new Promise<boolean>((resolve) => {
       this.updateDigestFile().then(() => {
         // Fetch the full ADM archive file from the runtime (ZIP) and export it to to the local
@@ -462,23 +462,46 @@ export class FileManagementService {
           const fileContent = new Blob([value], {
             type: 'application/octet-stream',
           });
-          // CommonUtil.writeFile(fileContent, mappingsFileName)
-          //   .then((value2) => {
-          //     resolve(value2);
-          //   })
-          //   .catch((error) => {
-          //     this.cfg.errorService.addError(
-          //       new ErrorInfo({
-          //         message: 'Unable to save the current data mappings.',
-          //         level: ErrorLevel.ERROR,
-          //         scope: ErrorScope.APPLICATION,
-          //         type: ErrorType.INTERNAL,
-          //         object: error,
-          //       })
-          //     );
-          //     resolve(false);
-          //   });
-          
+          CommonUtil.writeFile(fileContent, mappingsFileName)
+            .then((value2) => {
+              resolve(value2);
+            })
+            .catch((error) => {
+              this.cfg.errorService.addError(
+                new ErrorInfo({
+                  message: 'Unable to save the current data mappings.',
+                  level: ErrorLevel.ERROR,
+                  scope: ErrorScope.APPLICATION,
+                  type: ErrorType.INTERNAL,
+                  object: error,
+                })
+              );
+              resolve(false);
+            });
+        });
+      });
+    });
+  }
+
+  exportADMArchiveCustomized(mappingsFileName: string, fn?: (data: Blob) => {}): Promise<boolean> {
+    return new Promise<boolean>((resolve) => {
+      this.updateDigestFile().then(() => {
+        // Fetch the full ADM archive file from the runtime (ZIP) and export it to to the local
+        // downloads area.
+        this.getCurrentADMArchive().then(async (value: Uint8Array | null) => {
+          // If value is null then no compressed mappings digest file is available on the server.
+          if (value === null) {
+            resolve(false);
+            return;
+          }
+          // Tack on a .adm suffix if one wasn't already specified.
+          if (mappingsFileName.split('.').pop() !== 'adm') {
+            mappingsFileName = mappingsFileName.concat('.adm');
+          }
+          const fileContent = new Blob([value], {
+            type: 'application/octet-stream',
+          });
+
           if (fn) {
             fn(fileContent);
           }

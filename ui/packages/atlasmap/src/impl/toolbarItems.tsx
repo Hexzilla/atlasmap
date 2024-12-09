@@ -53,7 +53,7 @@ export interface IAtlasmapToolbarItemProps {
   showResetToolbarItem: boolean;
   onImportAtlasFile: (file: File) => void;
   onImportJarFile: (file: File) => void;
-  onExportAtlasFile: (filename: String, fn?: (data: Blob) => void) => void;
+  onExportAtlasFile: (filename: String) => void;
   onResetAtlasmap: () => void;
 }
 export const AtlasmapToolbarItem: FunctionComponent<

@@ -21,6 +21,17 @@ import atlasmapLogo from './logo-horizontal-darkbg.png';
 
 const App: React.FC = () => {
 
+  window.addEventListener('message', (event) => {
+    console.log(event);
+    // if (event.origin !== 'http://localhost:3000') return; // Ensure the origin is correct
+    console.log('Message from parent:', event.data);
+  
+    // Optionally, send a message back to the parent
+    if (event.source && event.origin) {
+      (event.source as WindowProxy).postMessage('Hello from iframe', event.origin);
+    }
+  });
+
   const exportADMArchiveFile = (fileContent: Blob) => {
     console.log("Export Clicked!");
 

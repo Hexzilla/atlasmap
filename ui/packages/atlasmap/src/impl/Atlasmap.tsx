@@ -101,26 +101,13 @@ export const Atlasmap: FunctionComponent<IAtlasmapProps> = ({
     onRemoveFromMapping,
     onCreateMapping,
     isEnumerationMapping,
-    exportADMArchiveFile,
+    exportADMArchiveFileCustomized,
   } = useAtlasmap();
 
   const { handlers, dialogs } = useAtlasmapDialogs({
     modalContainer: document.getElementById(modalsContainerId)!,
   });
   const { activeView, showMappingPreview, showTypes, contextToolbar } =
-    // useContextToolbar({
-    //   showImportAtlasFileToolbarItem: allowImport,
-    //   showImportJarFileToolbarItem: allowImport,
-    //   showExportAtlasFileToolbarItem: allowExport,
-    //   showResetToolbarItem: allowReset,
-    //   ...toolbarOptions,
-    //   onImportADMArchiveFile: handlers.onImportADMArchive,
-    //   onImportJarFile: (file) => importJarFile(file),
-    //   onExportAtlasFile: handlers.onExportADMArchive,
-    //   onResetAtlasmap: handlers.onResetAtlasmap,
-    //   onAbout: handlers.onAbout,
-    // });
-
     useContextToolbar({
       showImportAtlasFileToolbarItem: allowImport,
       showImportJarFileToolbarItem: allowImport,
@@ -129,7 +116,8 @@ export const Atlasmap: FunctionComponent<IAtlasmapProps> = ({
       ...toolbarOptions,
       onImportADMArchiveFile: handlers.onImportADMArchive,
       onImportJarFile: (file) => importJarFile(file),
-      onExportAtlasFile: () => exportADMArchiveFile("result", exportADMArchiveFileOnMain),
+      onExportAtlasFile: handlers.onExportADMArchive,
+      onExportAtlasFileCustomized: () => exportADMArchiveFileCustomized("result", exportADMArchiveFileOnMain),
       onResetAtlasmap: handlers.onResetAtlasmap,
       onAbout: handlers.onAbout,
     });
