@@ -47,7 +47,7 @@ export interface IAtlasmapProps {
   allowCustomJavaClasses?: boolean;
   modalsContainerId?: string;
   toolbarOptions?: IUseContextToolbarData;
-  admFilePath?: string;
+  admFile?: Blob | null;
   exportADMArchiveFileOnMain?: (data: Blob) => void;
 }
 
@@ -58,7 +58,7 @@ export const Atlasmap: FunctionComponent<IAtlasmapProps> = ({
   allowDelete = true,
   allowCustomJavaClasses = true,
   modalsContainerId = 'modals',
-  admFilePath = "",
+  admFile,
   toolbarOptions,
   exportADMArchiveFileOnMain,
 }) => {
@@ -102,6 +102,7 @@ export const Atlasmap: FunctionComponent<IAtlasmapProps> = ({
     onCreateMapping,
     isEnumerationMapping,
     exportADMArchiveFileCustomized,
+    resetAtlasmap,
   } = useAtlasmap();
 
   const { handlers, dialogs } = useAtlasmapDialogs({
@@ -123,25 +124,21 @@ export const Atlasmap: FunctionComponent<IAtlasmapProps> = ({
     });
 
   useEffect(() => {
-    if (admFilePath) {
-      fetch(admFilePath)
-        .then(response => {
-          // console.log(response);
-          if (!response.ok) { 
-            throw new Error('Network response was not ok');
-          }
-          return response.arrayBuffer();
-        })
+    if (admFile) {
+      console.log("reset function called!");
+      
+      resetAtlasmap();
+
+      admFile.arrayBuffer()
         .then(buffer => {
           const file = new File([buffer], "admFile.adm");
           handlers.onImportADMArchive(file);
-          // importADMArchiveFile(file);
         })
         .catch(error => {
           console.error("Error loading ADM file:", error);
         });
     }
-  }, [admFilePath]);
+  }, [admFile]);
 
   const shouldShowMappingPreviewForField = useCallback(
     (field: IAtlasmapField) =>

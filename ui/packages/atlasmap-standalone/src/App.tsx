@@ -16,45 +16,31 @@
 import { Brand, Page, PageHeader, PageSection } from '@patternfly/react-core';
 
 import { Atlasmap } from '@atlasmap/atlasmap';
-import React from 'react';
+import React, { useState } from 'react';
 import atlasmapLogo from './logo-horizontal-darkbg.png';
 
 const App: React.FC = () => {
+  const [fileContent, setFileContent] = useState<Blob | null>(null);
 
   window.addEventListener('message', (event) => {
     console.log(event);
-    // if (event.origin !== 'http://localhost:3000') return; // Ensure the origin is correct
     console.log('Message from parent:', event.data);
+
+    if (event.origin === 'http://localhost:5173' && event.data.fileData) {
+      const newFileContent = new Blob([event.data.fileData]);
+      setFileContent(newFileContent);
+    }
   
     // Optionally, send a message back to the parent
-    if (event.source && event.origin) {
-      (event.source as WindowProxy).postMessage('Hello from iframe', event.origin);
-    }
+    // if (event.source && event.origin) {
+    //   (event.source as WindowProxy).postMessage('Hello from iframe', event.origin);
+    // }
   });
 
   const exportADMArchiveFile = (fileContent: Blob) => {
-    console.log("Export Clicked!");
+    console.log("Export Clicked! --- IFrame");
 
-    const url = 'http://172.16.153.1/dashboard/upload.php';
-    fetch(url, {
-      method: 'PUT',
-      body: fileContent,
-      headers: {
-        'Content-Type': 'application/octet-stream',
-      },
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.text();
-    })
-    .then(_ => {
-      console.log('File successfully saved to URL:', url);
-    })
-    .catch(error => {
-      console.log(error);
-    });
+    window.parent.postMessage(fileContent, '*');
   }
 
   return (
@@ -80,7 +66,7 @@ const App: React.FC = () => {
         isFilled={true}
       >
         <Atlasmap 
-          admFilePath={"http://172.16.153.1/dashboard/atlasmap-mapping-mine.adm"}
+          admFile={fileContent}
           exportADMArchiveFileOnMain={exportADMArchiveFile}
         />
       </PageSection>
