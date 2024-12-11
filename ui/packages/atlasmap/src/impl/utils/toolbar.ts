@@ -59,9 +59,15 @@ export function exportADMArchiveFile(fileName: string) {
   return cfg.fileService.exportADMArchive(fileName);
 }
 
-export function exportADMArchiveFileCustomized(fileName: string, fn?: (data: Blob) => void) {
+export function exportADMArchiveFileCustomized(
+  fileName: string,
+  fn?: (data: Blob) => void,
+) {
   const cfg = ConfigModel.getConfig();
-  return cfg.fileService.exportADMArchiveCustomized(fileName, fn as ((data: Blob) => {}));
+  return cfg.fileService.exportADMArchiveCustomized(
+    fileName,
+    fn as (data: Blob) => {},
+  );
 }
 
 /**

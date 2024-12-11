@@ -17,6 +17,7 @@ import {
   AboutToolbarItem,
   AddMappingToolbarItem,
   AtlasmapToolbarItem,
+  ExportAdmFileToolbarItem,
   ToggleColumnMapperViewToolbarItem,
   ToggleMappedFieldsToolbarItem,
   ToggleMappingPreviewToolbarItem,
@@ -24,7 +25,6 @@ import {
   ToggleNamespaceTableViewToolbarItem,
   ToggleTypesToolbarItem,
   ToggleUnmappedFieldsToolbarItem,
-  ExportAdmFileToolbarItem,
 } from './toolbarItems';
 import React, { useMemo, useState } from 'react';
 
@@ -43,7 +43,10 @@ export interface IUseContextToolbarHandlers {
   onImportADMArchiveFile: (file: File) => void;
   onImportJarFile: (file: File) => void;
   onExportAtlasFile: (filename: String) => void;
-  onExportAtlasFileCustomized: (filename: String, fn?: (data: Blob) => void) => void;
+  onExportAtlasFileCustomized: (
+    filename: String,
+    fn?: (data: Blob) => void,
+  ) => void;
   onResetAtlasmap: () => void;
   onAbout: () => void;
 }
@@ -191,10 +194,12 @@ export function useContextToolbar({
               activeView === 'MappingTable') && (
               <AddMappingToolbarItem onClick={newMapping} />
             )}
-          {showExportAdmFileToolbarItem && 
+          {showExportAdmFileToolbarItem &&
             (activeView === 'ColumnMapper' ||
               activeView === 'MappingTable') && (
-                <ExportAdmFileToolbarItem onClick={() => onExportAtlasFileCustomized("result.adm")} />
+              <ExportAdmFileToolbarItem
+                onClick={() => onExportAtlasFileCustomized('result.adm')}
+              />
             )}
           {showAddNewMappingToolbarItem &&
             (activeView === 'ColumnMapper' ||
@@ -232,6 +237,7 @@ export function useContextToolbar({
       showUnmappedFields,
       toggleShowUnmappedFields,
       showAddNewMappingToolbarItem,
+      showExportAdmFileToolbarItem,
       newMapping,
     ],
   );

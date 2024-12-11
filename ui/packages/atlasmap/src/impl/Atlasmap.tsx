@@ -31,7 +31,12 @@ import {
   SourceTargetView,
 } from '../Views';
 import { IUseContextToolbarData, useContextToolbar } from './useContextToolbar';
-import React, { FunctionComponent, useCallback, useMemo, useEffect } from 'react';
+import React, {
+  FunctionComponent,
+  useCallback,
+  useEffect,
+  useMemo,
+} from 'react';
 import { getConstantType, getPropertyType } from './utils';
 
 import { AlertGroup } from '@patternfly/react-core';
@@ -118,27 +123,27 @@ export const Atlasmap: FunctionComponent<IAtlasmapProps> = ({
       onImportADMArchiveFile: handlers.onImportADMArchive,
       onImportJarFile: (file) => importJarFile(file),
       onExportAtlasFile: handlers.onExportADMArchive,
-      onExportAtlasFileCustomized: () => exportADMArchiveFileCustomized("result", exportADMArchiveFileOnMain),
+      onExportAtlasFileCustomized: () =>
+        exportADMArchiveFileCustomized('result', exportADMArchiveFileOnMain),
       onResetAtlasmap: handlers.onResetAtlasmap,
       onAbout: handlers.onAbout,
     });
 
   useEffect(() => {
     if (admFile) {
-      console.log("reset function called!");
-      
       resetAtlasmap();
 
-      admFile.arrayBuffer()
-        .then(buffer => {
-          const file = new File([buffer], "admFile.adm");
+      admFile
+        .arrayBuffer()
+        .then((buffer) => {
+          const file = new File([buffer], 'admFile.adm');
           handlers.onImportADMArchive(file);
         })
-        .catch(error => {
-          console.error("Error loading ADM file:", error);
+        .catch((error) => {
+          console.error('Error loading ADM file:', error);
         });
     }
-  }, [admFile]);
+  }, [admFile, handlers, resetAtlasmap]);
 
   const shouldShowMappingPreviewForField = useCallback(
     (field: IAtlasmapField) =>

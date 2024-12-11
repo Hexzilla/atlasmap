@@ -109,23 +109,23 @@ export const AtlasmapToolbarItem: FunctionComponent<
   ].filter((f) => f);
   return (
     <div style={{ display: 'none' }}>
-    <ToolbarItem>
-      <Dropdown
-        toggle={
-          <DropdownToggle
-            id="atlasmap-toggle"
-            onToggle={onToggle}
-            toggleIndicator={CaretDownIcon}
-            data-testid="atlasmap-menu-button"
-          >
-            Mapping
-          </DropdownToggle>
-        }
-        isOpen={isOpen}
-        dropdownItems={dropdownItems}
-        isPlain={true}
-      />
-    </ToolbarItem>
+      <ToolbarItem>
+        <Dropdown
+          toggle={
+            <DropdownToggle
+              id="atlasmap-toggle"
+              onToggle={onToggle}
+              toggleIndicator={CaretDownIcon}
+              data-testid="atlasmap-menu-button"
+            >
+              Mapping
+            </DropdownToggle>
+          }
+          isOpen={isOpen}
+          dropdownItems={dropdownItems}
+          isPlain={true}
+        />
+      </ToolbarItem>
     </div>
   );
 };
