@@ -61,4 +61,8 @@ public class JaxrsApplication extends Application {
         return new AtlasService();
     }
 
+    @Bean
+    public MappingService mappingService() throws AtlasException {
+        return new MappingService();
+    }
 }
