@@ -13,35 +13,76 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
-import { Brand, Page, PageHeader, PageSection } from '@patternfly/react-core';
+import { Page, PageSection } from '@patternfly/react-core';
 
-import { Atlasmap } from '@atlasmap/atlasmap';
-import React from 'react';
-import atlasmapLogo from './logo-horizontal-darkbg.png';
-
-/*async function readBinaryFile(file: File,reader: FileReader): Promise<Int8Array> {
-  return new Promise<Int8Array>((resolve) => {
-    reader.onload = () => {
-      const fileBody = new Int8Array(reader.result as ArrayBuffer);
-      resolve(fileBody);
-    };
-    reader.readAsArrayBuffer(file);
-  });
-}
-
-const uint8Array = new Uint8Array([65, 66, 67, 68]); // ABCD in ASCII
-const fileContent: Blob = new Blob([uint8Array], {
-  type: 'application/octet-stream',
-});
-const file = new File([fileContent], "atlasmap.adm");
-
-const reader = new FileReader();
-readBinaryFile(file, reader).then(buffer => {
-  console.log('~~~~~~~~~~~~~~~~~~buffer', buffer);
-});*/
+import { Atlasmap, useAtlasmap } from '@atlasmap/atlasmap';
+import React, { useCallback, useEffect, useState } from 'react';
 
 const App: React.FC = () => {
-  // const { importADMArchiveFile } = useAtlasmap();
+  const {
+    configModel,
+    pending,
+    sources,
+    importADMArchiveFile,
+    importInstanceSchema,
+  } = useAtlasmap();
+  const isLoading = pending || !configModel?.initCfg?.initialized;
+
+  const [admArchive, setAdmArchive] = useState<Uint8Array>();
+  const [sourceDocument, setSourceDocument] = useState<string>();
+
+  useEffect(() => {
+    const handleMessage = (event: { data: any }) => {
+      console.log('Message from parent:', event.data);
+      if (event.data) {
+        const data = JSON.parse(event.data);
+        if (data?.atlasmap) {
+          data.adm && setAdmArchive(new Uint8Array(data.adm));
+          data.source && setSourceDocument(JSON.stringify(data.source));
+        }
+      }
+    };
+    window.addEventListener('message', handleMessage);
+
+    return () => {
+      window.removeEventListener('message', handleMessage);
+    };
+  }, []);
+
+  console.log('status', {
+    pending,
+    sources: sources.length,
+    configModel: configModel?.initCfg?.initialized,
+    loadinStatus: configModel.initCfg.loadingStatus,
+  });
+
+  useEffect(() => {
+    if (!isLoading && admArchive) {
+      const fileContent: Blob = new Blob([admArchive], {
+        type: 'application/octet-stream',
+      });
+      const file = new File([fileContent], 'atlasmap.adm');
+      importADMArchiveFile(file);
+    }
+  }, [isLoading, admArchive, importADMArchiveFile]);
+
+  const importSourceDocument = useCallback(() => {
+    if (sourceDocument) {
+      const uint8Array = new TextEncoder().encode(sourceDocument);
+      const fileContent: Blob = new Blob([uint8Array], {
+        type: 'application/octet-stream',
+      });
+      const file = new File([fileContent], 'Source.json');
+      importInstanceSchema(file, configModel, true, false);
+    }
+  }, [configModel, sourceDocument, importInstanceSchema]);
+
+  useEffect(() => {
+    if (!isLoading && !sources.length) {
+      importSourceDocument();
+    }
+  }, [isLoading, sources, importSourceDocument]);
+
   return (
     <Page>
       <PageSection
@@ -52,7 +93,7 @@ const App: React.FC = () => {
         <Atlasmap
           allowImport={false}
           allowExport={false}
-          allowReset={false}
+          allowReset={true}
           allowDelete={false}
           allowCustomJavaClasses={false}
         />
