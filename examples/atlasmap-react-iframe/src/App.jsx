@@ -136,7 +136,7 @@ function App() {
       console.log("send adm");
       const data = JSON.stringify({
         atlasmap: true,
-        // adm,
+        adm,
         source: {
           firstName: "Eric",
           lastName: "Thomas",

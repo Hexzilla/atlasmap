@@ -28,16 +28,16 @@ const App: React.FC = () => {
   } = useAtlasmap();
   const isLoading = pending || !configModel?.initCfg?.initialized;
 
-  const [admArchive, setAdmArchive] = useState<Uint8Array>();
+  const [admArchive, setAdmArchive] = useState<Uint8Array | null>();
   const [sourceDocument, setSourceDocument] = useState<string>();
 
   useEffect(() => {
     const handleMessage = (event: { data: any }) => {
-      console.log('Message from parent:', event.data);
       if (event.data) {
         const data = JSON.parse(event.data);
-        if (data?.atlasmap) {
-          data.adm && setAdmArchive(new Uint8Array(data.adm));
+        if (data.adm) {
+          setAdmArchive(new Uint8Array(data.adm));
+        } else if (data.source) {
           data.source && setSourceDocument(JSON.stringify(data.source));
         }
       }
@@ -49,13 +49,6 @@ const App: React.FC = () => {
     };
   }, []);
 
-  console.log('status', {
-    pending,
-    sources: sources.length,
-    configModel: configModel?.initCfg?.initialized,
-    loadinStatus: configModel.initCfg.loadingStatus,
-  });
-
   useEffect(() => {
     if (!isLoading && admArchive) {
       const fileContent: Blob = new Blob([admArchive], {
@@ -63,6 +56,7 @@ const App: React.FC = () => {
       });
       const file = new File([fileContent], 'atlasmap.adm');
       importADMArchiveFile(file);
+      setAdmArchive(null);
     }
   }, [isLoading, admArchive, importADMArchiveFile]);
 
