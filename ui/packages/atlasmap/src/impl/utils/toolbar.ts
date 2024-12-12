@@ -54,6 +54,17 @@ export async function deleteAtlasFile(fileId: string, isSource: boolean) {
  *
  * @param fileName - user-specified ADM archive file name
  */
+export function getADMArchive() {
+  const cfg = ConfigModel.getConfig();
+  return cfg.fileService.getADMArchive();
+}
+
+/**
+ * The user has requested their current mappings be exported.  Use the mapping management
+ * service to establish the file content and to push it down to the server.
+ *
+ * @param fileName - user-specified ADM archive file name
+ */
 export function exportADMArchiveFile(fileName: string) {
   const cfg = ConfigModel.getConfig();
   return cfg.fileService.exportADMArchive(fileName);

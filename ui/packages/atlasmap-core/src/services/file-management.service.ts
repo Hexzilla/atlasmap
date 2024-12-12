@@ -436,6 +436,22 @@ export class FileManagementService {
   }
 
   /**
+   * Update the current mapping files and return the ADM archive
+   */
+  getADMArchive(): Promise<Uint8Array | null> {
+    return new Promise<Uint8Array | null>((resolve) => {
+      this.updateDigestFile().then(() => {
+        // Fetch the full ADM archive file from the runtime (ZIP) and export it to to the local
+        // downloads area.
+        this.getCurrentADMArchive().then(async (value: Uint8Array | null) => {
+          // If value is null then no compressed mappings digest file is available on the server.
+          resolve(value);
+        });
+      });
+    });
+  }
+
+  /**
    * Update the current mapping files and export the ADM archive file with current mappings.
    *
    * Establish the mapping digest file content in JSON format (mappings + schema + instance-schema),
