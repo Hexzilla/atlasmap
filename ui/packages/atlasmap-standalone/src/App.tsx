@@ -19,30 +19,43 @@ import { Atlasmap } from '@atlasmap/atlasmap';
 import React from 'react';
 import atlasmapLogo from './logo-horizontal-darkbg.png';
 
+/*async function readBinaryFile(file: File,reader: FileReader): Promise<Int8Array> {
+  return new Promise<Int8Array>((resolve) => {
+    reader.onload = () => {
+      const fileBody = new Int8Array(reader.result as ArrayBuffer);
+      resolve(fileBody);
+    };
+    reader.readAsArrayBuffer(file);
+  });
+}
+
+const uint8Array = new Uint8Array([65, 66, 67, 68]); // ABCD in ASCII
+const fileContent: Blob = new Blob([uint8Array], {
+  type: 'application/octet-stream',
+});
+const file = new File([fileContent], "atlasmap.adm");
+
+const reader = new FileReader();
+readBinaryFile(file, reader).then(buffer => {
+  console.log('~~~~~~~~~~~~~~~~~~buffer', buffer);
+});*/
+
 const App: React.FC = () => {
+  // const { importADMArchiveFile } = useAtlasmap();
   return (
-    <Page
-      header={
-        <PageHeader
-          logo={
-            <>
-              <Brand
-                src={atlasmapLogo}
-                alt="AtlasMap Data Mapper UI"
-                height="40"
-              />
-            </>
-          }
-          style={{ minHeight: 40 }}
-        />
-      }
-    >
+    <Page>
       <PageSection
         variant={'light'}
         padding={{ default: 'noPadding' }}
         isFilled={true}
       >
-        <Atlasmap />
+        <Atlasmap
+          allowImport={false}
+          allowExport={false}
+          allowReset={false}
+          allowDelete={false}
+          allowCustomJavaClasses={false}
+        />
       </PageSection>
     </Page>
   );
