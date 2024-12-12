@@ -27,6 +27,7 @@ import io.atlasmap.dfdl.service.DfdlService;
 import io.atlasmap.java.service.JavaService;
 import io.atlasmap.json.service.JsonService;
 import io.atlasmap.service.AtlasService;
+import io.atlasmap.service.MappingService;
 import io.atlasmap.xml.service.XmlService;
 
 @Component
